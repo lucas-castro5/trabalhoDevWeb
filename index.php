@@ -19,19 +19,52 @@ function responder($dados = null, $status = 200)
     exit;
 }
 
+function lerJson(): array
+{
+    $corpo = file_get_contents('php://input');
+    $dados = json_decode($corpo, true);
+    if (!is_array($dados)) {
+        responder(['detail' => 'JSON inválido'], 400);
+    }
+    return $dados;
+}
+
+function validarTutor(array $dados): void
+{
+    $erros = [];
+    $nome = trim((string) ($dados['nome'] ?? ''));
+    $telefone = trim((string) ($dados['telefone'] ?? ''));
+    $email = trim((string) ($dados['email'] ?? ''));
+
+    if (mb_strlen($nome) < 2 || mb_strlen($nome) > 100) {
+        $erros[] = 'O nome deve ter entre 2 e 100 caracteres';
+    }
+    if ($telefone === '') {
+        $erros[] = 'O telefone é obrigatório';
+    }
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $erros[] = 'O e-mail informado é inválido';
+    }
+
+    if (!empty($erros)) {
+        responder(['detail' => 'Dados inválidos', 'erros' => $erros], 422);
+    }
+}
+
 $metodo = $_SERVER['REQUEST_METHOD'];
 $caminho = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
 if ($base !== '' && str_starts_with($caminho, $base)) {
     $caminho = substr($caminho, strlen($base)) ?: '/';
-    }
+}
 if (str_starts_with($caminho, '/index.php')) {
-        $caminho = substr($caminho, strlen('/index.php')) ?: '/';
-    }
+    $caminho = substr($caminho, strlen('/index.php')) ?: '/';
+}
 $caminho = rtrim($caminho, '/') ?: '/';
 
 try {
+
     // GET /tutores
     if ($metodo === 'GET' && $caminho === '/tutores') {
         $usuario = new Usuario();
@@ -66,6 +99,15 @@ try {
         ]);
     }
 
+    // POST /tutores -> cria um novo tutor a partir do JSON enviado (retorna 201 Created)                                                                                
+    if ($metodo === 'POST' && $caminho === '/tutores') {
+        $dados = lerJson();       // lê o corpo da requisição                                                                                                            
+        validarTutor($dados);     // garante nome, telefone e e-mail válidos                                                                                             
+        $usuario = new Usuario();
+        $id = $usuario->gravar($dados);
+        responder(['id' => $id, 'nome' => $dados['nome'], 'telefone' => $dados['telefone'], 'email' => $dados['email']], 201);
+    }
+
     // GET /pets  (filtro opcional ?especie=)
     if ($metodo === 'GET' && $caminho === '/pets') {
         $especie = $_GET['especie'] ?? null;
@@ -86,6 +128,9 @@ try {
         responder($pet);
     }
 } catch (PDOException $e) {
+    if (($e->errorInfo[1] ?? null) === 1062) {
+        responder(['detail' => 'E-mail já cadastrado'], 409);
+    }
     responder(['detail' => 'Erro interno no banco de dados'], 500);
 }
 

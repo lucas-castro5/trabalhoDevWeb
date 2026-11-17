@@ -55,4 +55,47 @@ class Pet {
         $smt->execute();
         return array_map([$this, 'formatar'], $smt->fetchAll(PDO::FETCH_ASSOC));
     }
+
+    public function gravar(array $dados): int {
+        $sql = "INSERT INTO pets (nome_pet, especie, raca, data_nascimento, peso_kg, usuario_id)
+                VALUES (:nome, :especie, :raca, :data_nascimento, :peso_kg, :tutor_id)";
+        $smt = $this->conexao->prepare($sql);
+        $smt->bindValue(':nome', $dados['nome']);
+        $smt->bindValue(':especie', $dados['especie']);
+        $smt->bindValue(':raca', $dados['raca'] ?? null);
+        $smt->bindValue(':data_nascimento', $dados['data_nascimento']);
+        $smt->bindValue(':peso_kg', $dados['peso_kg']);
+        $smt->bindValue(':tutor_id', $dados['tutor_id'], PDO::PARAM_INT);
+        $smt->execute();
+        return (int) $this->conexao->lastInsertId();
+    }
+
+    public function atualizar(int $id, array $dados): bool {
+        $sql = "UPDATE pets
+                SET nome_pet = :nome,
+                    especie = :especie,
+                    raca = :raca,
+                    data_nascimento = :data_nascimento,
+                    peso_kg = :peso_kg,
+                    usuario_id = :tutor_id
+                WHERE id_pet = :id";
+        $smt = $this->conexao->prepare($sql);
+        $smt->bindValue(':nome', $dados['nome']);
+        $smt->bindValue(':especie', $dados['especie']);
+        $smt->bindValue(':raca', $dados['raca'] ?? null);
+        $smt->bindValue(':data_nascimento', $dados['data_nascimento']);
+        $smt->bindValue(':peso_kg', $dados['peso_kg']);
+        $smt->bindValue(':tutor_id', $dados['tutor_id'], PDO::PARAM_INT);
+        $smt->bindValue(':id', $id, PDO::PARAM_INT);
+        $smt->execute();
+        return $smt->rowCount() > 0;
+    }
+
+    public function excluir(int $id): bool {
+        $sql = "DELETE FROM pets WHERE id_pet = :id";
+        $smt = $this->conexao->prepare($sql);
+        $smt->bindValue(':id', $id, PDO::PARAM_INT);
+        $smt->execute();
+        return $smt->rowCount() > 0;
+    }
 }
