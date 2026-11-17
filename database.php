@@ -7,7 +7,7 @@ class Database
         $host = "127.0.0.1";
         $dbname = "petcare";
         $user = "root";
-        $pass = ""; 
+        $pass = "ceub123456"; 
         $port = "3306";
 
         $dns = "mysql:host={$host};dbname={$dbname};port={$port};charset=utf8mb4";

@@ -36,10 +36,10 @@ CREATE TABLE tokens (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id_usuario) ON DELETE CASCADE
 );
 
--- perfis
+
 INSERT INTO perfil (tipo) VALUES ('admin'), ('tutor');
 
--- usuários: 1 admin (login do professor) + 5 tutores
+
 INSERT INTO usuarios (nome_usuario, email_usuario, telefone, senha_hash, id_perfil) VALUES
 ('Professor Teste', 'professor@petcare.com', NULL,         'COLE_AQUI_O_HASH_GERADO_NO_PHP', 1),
 ('João Silva',      'joao@email.com',        '61999990001', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
@@ -48,7 +48,7 @@ INSERT INTO usuarios (nome_usuario, email_usuario, telefone, senha_hash, id_perf
 ('Ana Costa',       'ana@email.com',         '61999990004', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
 ('Lucas Oliveira',  'lucas@email.com',       '61999990005', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2);
 
--- pets (usuario_id 2 a 6 = tutores)
+
 INSERT INTO pets (nome_pet, especie, raca, data_nascimento, peso_kg, usuario_id) VALUES
 ('Rex',     'cachorro', 'Labrador',      '2020-05-10', 25.50, 2),
 ('Mel',     'gato',     'Siamês',        '2021-03-15',  4.20, 2),
