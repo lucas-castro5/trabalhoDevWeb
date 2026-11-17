@@ -1,6 +1,6 @@
 <?php
 
-class Database
+class Conexao
 {
     public static function getConnection(): PDO
     {
