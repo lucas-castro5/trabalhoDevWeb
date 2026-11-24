@@ -27,7 +27,7 @@ API REST em PHP puro com banco MySQL (via PDO) para gerenciamento de tutores, pe
 
 ## Rotas disponíveis
 
-URL base local: `http://localhost/dvwb/index.php` *(ajustar para `http://localhost/petcare` após configurar o `.htaccess`)*
+URL base local: `http://localhost/petcare`
 
 ### Tutores
 | Método | Rota | Descrição |
