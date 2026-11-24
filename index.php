@@ -188,10 +188,11 @@ try {
         validarTutor($dados);
         $id = (int) $partes[1];
         $usuario = new Usuario();
-        if ($usuario->atualizar($id, $dados)) {
-            responder(['id' => $id, 'nome' => $dados['nome'], 'telefone' => $dados['telefone'], 'email' => $dados['email']]);
+        if (!$usuario->listarTutorPorId($id)) {
+            responder(['detail' => 'Tutor não encontrado'], 404);
         }
-        responder(['detail' => 'Tutor não encontrado ou sem alterações'], 404);
+        $usuario->atualizar($id, $dados);
+        responder(['id' => $id, 'nome' => $dados['nome'], 'telefone' => $dados['telefone'], 'email' => $dados['email']]);
     }
 
     // DELETE /tutores/{id} -> exclui o tutor; retorna 204 (sem conteúdo) se der certo
@@ -247,18 +248,19 @@ try {
         validarPet($dados);
         $id = (int) $partes[1];
         $pet = new Pet();
-        if ($pet->atualizar($id, $dados)) {
-            responder([
-                'id' => $id,
-                'nome' => $dados['nome'],
-                'especie' => $dados['especie'],
-                'raca' => $dados['raca'] ?? null,
-                'data_nascimento' => $dados['data_nascimento'],
-                'peso_kg' => (float) $dados['peso_kg'],
-                'tutor_id' => (int) $dados['tutor_id'],
-            ]);
+        if (!$pet->listarPorId($id)) {
+            responder(['detail' => 'Pet não encontrado'], 404);
         }
-        responder(['detail' => 'Pet não encontrado ou sem alterações'], 404);
+        $pet->atualizar($id, $dados);
+        responder([
+            'id' => $id,
+            'nome' => $dados['nome'],
+            'especie' => $dados['especie'],
+            'raca' => $dados['raca'] ?? null,
+            'data_nascimento' => $dados['data_nascimento'],
+            'peso_kg' => (float) $dados['peso_kg'],
+            'tutor_id' => (int) $dados['tutor_id'],
+        ]);
     }
 
     // DELETE /pets/{id} -> exclui o pet; retorna 204 (sem conteúdo) se der certo
@@ -304,10 +306,11 @@ try {
         validarPerfil($dados);
         $id = (int) $partes[1];
         $perfil = new Perfil();
-        if ($perfil->atualizar($id, $dados)) {
-            responder(['id' => $id, 'tipo' => $dados['tipo']]);
+        if (!$perfil->listarPorId($id)) {
+            responder(['detail' => 'Perfil não encontrado'], 404);
         }
-        responder(['detail' => 'Perfil não encontrado ou sem alterações'], 404);
+        $perfil->atualizar($id, $dados);
+        responder(['id' => $id, 'tipo' => $dados['tipo']]);
     }
 
     // DELETE /perfis/{id} -> exclui o perfil; retorna 204 (sem conteúdo) se der certo
@@ -365,16 +368,17 @@ try {
         }
         $id = (int) $partes[1];
         $usuario = new Usuario();
-        if ($usuario->atualizarUsuario($id, $dados)) {
-            responder([
-                'id' => $id,
-                'nome' => $dados['nome'],
-                'email' => $dados['email'],
-                'telefone' => $dados['telefone'] ?? null,
-                'id_perfil' => (int) $dados['id_perfil'],
-            ]);
+        if (!$usuario->listarPorId($id)) {
+            responder(['detail' => 'Usuário não encontrado'], 404);
         }
-        responder(['detail' => 'Usuário não encontrado ou sem alterações'], 404);
+        $usuario->atualizarUsuario($id, $dados);
+        responder([
+            'id' => $id,
+            'nome' => $dados['nome'],
+            'email' => $dados['email'],
+            'telefone' => $dados['telefone'] ?? null,
+            'id_perfil' => (int) $dados['id_perfil'],
+        ]);
     }
 
     // DELETE /usuarios/{id} -> exclui o usuário; retorna 204 (sem conteúdo) se der certo

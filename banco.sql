@@ -40,13 +40,14 @@ CREATE TABLE tokens (
 INSERT INTO perfil (tipo) VALUES ('admin'), ('tutor');
 
 
+-- Senha padrão dos usuários de exemplo: 123456
 INSERT INTO usuarios (nome_usuario, email_usuario, telefone, senha_hash, id_perfil) VALUES
-('Professor Teste', 'professor@petcare.com', NULL,         'COLE_AQUI_O_HASH_GERADO_NO_PHP', 1),
-('João Silva',      'joao@email.com',        '61999990001', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
-('Maria Souza',     'maria@email.com',       '61999990002', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
-('Pedro Santos',    'pedro@email.com',       '61999990003', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
-('Ana Costa',       'ana@email.com',         '61999990004', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2),
-('Lucas Oliveira',  'lucas@email.com',       '61999990005', 'COLE_AQUI_O_HASH_GERADO_NO_PHP', 2);
+('Professor Teste', 'professor@petcare.com', NULL,         '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 1),
+('João Silva',      'joao@email.com',        '61999990001', '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 2),
+('Maria Souza',     'maria@email.com',       '61999990002', '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 2),
+('Pedro Santos',    'pedro@email.com',       '61999990003', '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 2),
+('Ana Costa',       'ana@email.com',         '61999990004', '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 2),
+('Lucas Oliveira',  'lucas@email.com',       '61999990005', '$2y$10$mX4w4JYPxrerqU.U.cer.eLSfuUVWciQJQySdpgDjdl3Khp.bQIZy', 2);
 
 
 INSERT INTO pets (nome_pet, especie, raca, data_nascimento, peso_kg, usuario_id) VALUES

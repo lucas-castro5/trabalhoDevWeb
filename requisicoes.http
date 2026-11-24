@@ -1,0 +1,313 @@
+@baseUrl = http://localhost/petcare
+
+### =====================================================
+### TUTORES
+### =====================================================
+
+### Listar todos os tutores (200)
+GET {{baseUrl}}/tutores
+
+### Buscar tutor por ID (200)
+GET {{baseUrl}}/tutores/2
+
+### Buscar tutor inexistente (404)
+GET {{baseUrl}}/tutores/999
+
+### Listar pets de um tutor (200)
+GET {{baseUrl}}/tutores/2/pets
+
+### Listar pets de um tutor inexistente (404)
+GET {{baseUrl}}/tutores/999/pets
+
+### Cadastrar novo tutor (201)
+# @name criarTutor
+POST {{baseUrl}}/tutores
+Content-Type: application/json
+
+{
+  "nome": "Carlos Mendes",
+  "telefone": "61999991111",
+  "email": "carlos.mendes@email.com"
+}
+
+### Cadastrar tutor com e-mail duplicado (409)
+POST {{baseUrl}}/tutores
+Content-Type: application/json
+
+{
+  "nome": "Outro Joao",
+  "telefone": "61999992222",
+  "email": "joao@email.com"
+}
+
+### Cadastrar tutor com dados inválidos (422)
+POST {{baseUrl}}/tutores
+Content-Type: application/json
+
+{
+  "nome": "A",
+  "telefone": "",
+  "email": "email-invalido"
+}
+
+### Enviar corpo que não é JSON válido (400)
+POST {{baseUrl}}/tutores
+Content-Type: application/json
+
+isso nao e json
+
+### Atualizar tutor (200)
+PUT {{baseUrl}}/tutores/{{criarTutor.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Carlos Mendes Atualizado",
+  "telefone": "61999993333",
+  "email": "carlos.mendes@email.com"
+}
+
+### Atualizar tutor reenviando os mesmos dados (200)
+PUT {{baseUrl}}/tutores/{{criarTutor.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Carlos Mendes Atualizado",
+  "telefone": "61999993333",
+  "email": "carlos.mendes@email.com"
+}
+
+### Atualizar tutor inexistente (404)
+PUT {{baseUrl}}/tutores/999
+Content-Type: application/json
+
+{
+  "nome": "Nao Existe",
+  "telefone": "61999990000",
+  "email": "naoexiste@email.com"
+}
+
+### Atualizar tutor com e-mail já usado por outro tutor (409)
+PUT {{baseUrl}}/tutores/{{criarTutor.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Carlos Mendes",
+  "telefone": "61999993333",
+  "email": "maria@email.com"
+}
+
+### Atualizar tutor com dados inválidos (422)
+PUT {{baseUrl}}/tutores/2
+Content-Type: application/json
+
+{
+  "nome": "X",
+  "telefone": "",
+  "email": "invalido"
+}
+
+### Excluir tutor que possui pets vinculados (409 - ON DELETE RESTRICT)
+DELETE {{baseUrl}}/tutores/2
+
+### Excluir tutor inexistente (404)
+DELETE {{baseUrl}}/tutores/999
+
+### Excluir tutor sem pets (204)
+DELETE {{baseUrl}}/tutores/{{criarTutor.response.body.id}}
+
+### =====================================================
+### PETS
+### =====================================================
+
+### Listar todos os pets (200)
+GET {{baseUrl}}/pets
+
+### Listar pets filtrando por espécie (200)
+GET {{baseUrl}}/pets?especie=cachorro
+
+### Listar pets filtrando por outra espécie (200)
+GET {{baseUrl}}/pets?especie=gato
+
+### Buscar pet por ID com nome do tutor via JOIN (200)
+GET {{baseUrl}}/pets/1
+
+### Buscar pet inexistente (404)
+GET {{baseUrl}}/pets/999
+
+### Cadastrar novo pet (201)
+# @name criarPet
+POST {{baseUrl}}/pets
+Content-Type: application/json
+
+{
+  "nome": "Bidu",
+  "especie": "cachorro",
+  "raca": "Schnauzer",
+  "data_nascimento": "2022-08-15",
+  "peso_kg": 9.5,
+  "tutor_id": 2
+}
+
+### Cadastrar pet com dados inválidos (422)
+POST {{baseUrl}}/pets
+Content-Type: application/json
+
+{
+  "nome": "B",
+  "especie": "dragao",
+  "raca": "Fogo",
+  "data_nascimento": "2099-01-01",
+  "peso_kg": 0,
+  "tutor_id": 2
+}
+
+### Cadastrar pet com tutor_id inexistente (422)
+POST {{baseUrl}}/pets
+Content-Type: application/json
+
+{
+  "nome": "Bidu",
+  "especie": "cachorro",
+  "raca": "Schnauzer",
+  "data_nascimento": "2022-08-15",
+  "peso_kg": 9.5,
+  "tutor_id": 999
+}
+
+### Atualizar pet (200)
+PUT {{baseUrl}}/pets/{{criarPet.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Bidu Jr",
+  "especie": "cachorro",
+  "raca": "Schnauzer",
+  "data_nascimento": "2022-08-15",
+  "peso_kg": 10.2,
+  "tutor_id": 2
+}
+
+### Atualizar pet reenviando os mesmos dados (200)
+PUT {{baseUrl}}/pets/{{criarPet.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Bidu Jr",
+  "especie": "cachorro",
+  "raca": "Schnauzer",
+  "data_nascimento": "2022-08-15",
+  "peso_kg": 10.2,
+  "tutor_id": 2
+}
+
+### Atualizar pet inexistente (404)
+PUT {{baseUrl}}/pets/999
+Content-Type: application/json
+
+{
+  "nome": "Fantasma",
+  "especie": "gato",
+  "raca": "SRD",
+  "data_nascimento": "2021-05-10",
+  "peso_kg": 4.0,
+  "tutor_id": 2
+}
+
+### Atualizar pet com dados inválidos (422)
+PUT {{baseUrl}}/pets/1
+Content-Type: application/json
+
+{
+  "nome": "A",
+  "especie": "invalida",
+  "data_nascimento": "15/08/2022",
+  "peso_kg": 300,
+  "tutor_id": 999
+}
+
+### Excluir pet (204)
+DELETE {{baseUrl}}/pets/{{criarPet.response.body.id}}
+
+### Excluir pet inexistente (404)
+DELETE {{baseUrl}}/pets/999
+
+### =====================================================
+### PERFIS
+### =====================================================
+
+### Listar perfis (200)
+GET {{baseUrl}}/perfis
+
+### Buscar perfil por ID (200)
+GET {{baseUrl}}/perfis/1
+
+### Buscar perfil inexistente (404)
+GET {{baseUrl}}/perfis/999
+
+### Cadastrar novo perfil (201)
+# @name criarPerfil
+POST {{baseUrl}}/perfis
+Content-Type: application/json
+
+{
+  "tipo": "recepcionista"
+}
+
+### Atualizar perfil (200)
+PUT {{baseUrl}}/perfis/{{criarPerfil.response.body.id}}
+Content-Type: application/json
+
+{
+  "tipo": "atendente"
+}
+
+### Excluir perfil (204)
+DELETE {{baseUrl}}/perfis/{{criarPerfil.response.body.id}}
+
+### =====================================================
+### USUÁRIOS
+### =====================================================
+
+### Listar usuários (200)
+GET {{baseUrl}}/usuarios
+
+### Buscar usuário por ID (200)
+GET {{baseUrl}}/usuarios/1
+
+### Buscar usuário inexistente (404)
+GET {{baseUrl}}/usuarios/999
+
+### Cadastrar novo usuário com senha (salva com password_hash) (201)
+# @name criarUsuario
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Funcionario Teste",
+  "email": "funcionario@petcare.com",
+  "telefone": "61999994444",
+  "senha": "minhasenha123",
+  "id_perfil": 1
+}
+
+### Atualizar usuário (200)
+PUT {{baseUrl}}/usuarios/{{criarUsuario.response.body.id}}
+Content-Type: application/json
+
+{
+  "nome": "Funcionario Atualizado",
+  "email": "funcionario@petcare.com",
+  "telefone": "61999995555",
+  "senha": "novasenha123",
+  "id_perfil": 1
+}
+
+### Excluir usuário (204)
+DELETE {{baseUrl}}/usuarios/{{criarUsuario.response.body.id}}
+
+### =====================================================
+### ROTA INEXISTENTE
+### =====================================================
+
+### Rota inexistente (404)
+GET {{baseUrl}}/rota-que-nao-existe
