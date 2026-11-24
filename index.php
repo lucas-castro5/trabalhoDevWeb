@@ -97,18 +97,22 @@ function validarPet(array $dados): void
     $pesoKg = $dados['peso_kg'] ?? null;
     $tutorId = filter_var($dados['tutor_id'] ?? null, FILTER_VALIDATE_INT);
 
-    if (mb_strlen($nome) < 2 || mb_strlen($nome) > 255) {
-        $erros[] = 'O nome do pet deve ter entre 2 e 255 caracteres';
+    $especiesValidas = ['cachorro', 'gato', 'ave', 'roedor', 'outro'];
+
+    if (mb_strlen($nome) < 2 || mb_strlen($nome) > 60) {
+        $erros[] = 'O nome do pet deve ter entre 2 e 60 caracteres';
     }
-    if ($especie === '' || mb_strlen($especie) > 100) {
-        $erros[] = 'A espécie é obrigatória e deve ter até 100 caracteres';
+    if (!in_array($especie, $especiesValidas, true)) {
+        $erros[] = 'A espécie deve ser: cachorro, gato, ave, roedor ou outro';
     }
     $dt = DateTime::createFromFormat('Y-m-d', $dataNascimento);
     if (!$dt || $dt->format('Y-m-d') !== $dataNascimento) {
-        $erros[] = 'A data_nascimento deve estar no formato YYYY-MM-DD';
+        $erros[] = 'A data_nascimento deve estar no formato AAAA-MM-DD';
+    } elseif ($dataNascimento > date('Y-m-d')) {
+        $erros[] = 'A data_nascimento não pode ser uma data futura';
     }
-    if (!is_numeric($pesoKg) || (float) $pesoKg <= 0 || (float) $pesoKg > 999.99) {
-        $erros[] = 'O peso_kg deve ser um número maior que 0 e até 999.99';
+    if (!is_numeric($pesoKg) || (float) $pesoKg <= 0 || (float) $pesoKg > 200) {
+        $erros[] = 'O peso_kg deve ser um número maior que 0 e até 200';
     }
     if ($tutorId === false || $tutorId <= 0) {
         $erros[] = 'O tutor_id deve ser um número inteiro válido';
